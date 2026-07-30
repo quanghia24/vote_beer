@@ -212,12 +212,12 @@
   <header class="hero">
     <div class="eyebrow">🍢 Team outing</div>
     <h1>Vote địa điểm <span class="accent">nhậu</span> công ty</h1>
-    <p class="subtitle">Chọn quán ưng ý nhất, xem review nhanh, và bình chọn — kết quả cập nhật cho cả team theo thời gian thực.</p>
+    <p class="subtitle">Chọn (nhiều) quán ưng ý, xem review nhanh, và bình chọn — kết quả cập nhật cho cả team theo thời gian thực.</p>
   </header>
 
   <div class="voter-bar">
     <label for="voterName">Tên bạn:</label>
-    <input id="voterName" type="text" placeholder="VD: Minh Kế toán" autocomplete="off" maxlength="40">
+    <input id="voterName" type="text" placeholder="VD: Tung GT" autocomplete="off" maxlength="40">
     <div class="tally" id="tally">Đang tải...</div>
     <div class="voter-warn" id="voterWarn">⚠️ Nhập tên trước khi vote nha!</div>
   </div>
@@ -293,7 +293,7 @@ function escapeHtml(s){
 }
 
 function tallyFor(id){
-  return Object.values(votes).filter(v => v === id).length;
+  return Object.values(votes).filter(picks => picks.includes(id)).length;
 }
 
 function totalVotes(){
@@ -378,10 +378,12 @@ async function onVote(venueId){
     setTimeout(() => warn.classList.remove('show'), 2600);
     return;
   }
-  if(votes[name] === venueId){
-    delete votes[name];
+  const picks = votes[name] || [];
+  if(picks.includes(venueId)){
+    votes[name] = picks.filter(id => id !== venueId);
+    if(!votes[name].length) delete votes[name];
   } else {
-    votes[name] = venueId;
+    votes[name] = [...picks, venueId];
   }
   renderResults();
   try{
@@ -426,12 +428,12 @@ function renderResults(){
     }
 
     const btn = card.querySelector('.vote-btn');
-    const isMine = votes[name] === v.id && name;
+    const isMine = !!name && (votes[name] || []).includes(v.id);
     btn.textContent = isMine ? '✓ Đã chọn' : '🍻 Chọn quán này';
-    btn.classList.toggle('chosen', !!isMine);
+    btn.classList.toggle('chosen', isMine);
 
     const votersWrap = card.querySelector('.voters-list');
-    const voterNames = Object.entries(votes).filter(([,id]) => id === v.id).map(([n]) => n);
+    const voterNames = Object.entries(votes).filter(([,picks]) => picks.includes(v.id)).map(([n]) => n);
     votersWrap.innerHTML = voterNames.map(n =>
       `<span class="voter-chip${n === name ? ' me' : ''}">${escapeHtml(n)}</span>`
     ).join('');
