@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vote địa điểm nhậu công ty</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-950:#1B140F;
+    --bg-900:#241B14;
+    --card:#2E2318;
+    --card-hover:#362A1D;
+    --line: rgba(240,222,190,0.14);
+    --line-strong: rgba(240,222,190,0.26);
+    --cream:#F2E9D8;
+    --cream-dim: rgba(242,233,216,0.68);
+    --cream-faint: rgba(242,233,216,0.42);
+    --amber-300:#F6C566;
+    --amber-500:#EFA23A;
+    --amber-600:#D98620;
+    --ember-500:#DD5A34;
+    --ember-600:#C1441F;
+    --herb-400:#8FB35E;
+    --herb-600:#5E7F3B;
+    --radius-card:18px;
+    --radius-pill:999px;
+    --shadow-card: 0 10px 24px rgba(0,0,0,0.28);
+    --font-display: 'Baloo 2', sans-serif;
+    --font-body: 'Be Vietnam Pro', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(ellipse 900px 500px at 50% -8%, #3A2C1E 0%, var(--bg-950) 55%), var(--bg-950);
+    color: var(--cream);
+    font-family: var(--font-body);
+    min-height:100vh;
+    padding: 28px 16px 60px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+
+  header.hero{text-align:center;padding: 6px 8px 28px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;
+    color: var(--amber-300); text-transform:uppercase;
+    background: rgba(239,162,58,0.1); border:1px solid rgba(239,162,58,0.3);
+    padding:5px 14px;border-radius:var(--radius-pill); margin-bottom:16px;
+  }
+  h1{
+    font-family:var(--font-display); font-weight:800;
+    font-size: clamp(28px, 5vw, 42px); line-height:1.12; margin:0 0 10px;
+    color: var(--cream);
+  }
+  h1 .accent{color:var(--amber-300);}
+  .subtitle{color:var(--cream-dim); font-size:15px; max-width:520px; margin:0 auto; line-height:1.6;}
+
+  .voter-bar{
+    background: var(--card); border:1px solid var(--line); border-radius: var(--radius-card);
+    padding:16px 18px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+    margin-bottom:26px; box-shadow: var(--shadow-card);
+  }
+  .voter-bar label{font-size:13px; color:var(--cream-dim); white-space:nowrap;}
+  .voter-bar input{
+    flex:1; min-width:160px; background: rgba(0,0,0,0.22); border:1px solid var(--line-strong);
+    color:var(--cream); font-family:var(--font-body); font-size:15px; font-weight:500;
+    padding:10px 14px; border-radius:12px; outline:none;
+  }
+  .voter-bar input:focus{border-color: var(--amber-500); box-shadow: 0 0 0 3px rgba(239,162,58,0.18);}
+  .voter-bar input::placeholder{color:var(--cream-faint);}
+  .tally{
+    font-family:var(--font-mono); font-size:13px; color:var(--cream-dim);
+    background: rgba(0,0,0,0.2); border:1px solid var(--line); padding:9px 14px; border-radius:12px;
+    white-space:nowrap;
+  }
+  .tally b{color:var(--amber-300); font-weight:600;}
+  .voter-warn{
+    width:100%; font-size:13px; color:var(--ember-500); font-weight:500;
+    display:none; align-items:center; gap:6px;
+  }
+  .voter-warn.show{display:flex;}
+
+  .grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap:18px;
+  }
+
+  .venue{
+    position:relative; background: var(--card); border:1px solid var(--line);
+    border-radius: var(--radius-card); padding:20px 20px 18px; box-shadow: var(--shadow-card);
+    transition: border-color .2s ease, transform .2s ease;
+    animation: rise .5s ease backwards;
+  }
+  .venue:hover{border-color: var(--line-strong);}
+  .venue.leading{border-color: rgba(246,197,102,0.55);}
+  @keyframes rise{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+  .leader-badge{
+    position:absolute; top:-11px; right:16px; font-family:var(--font-mono); font-size:11px;
+    font-weight:600; letter-spacing:0.04em; background: var(--amber-500); color:#3A2408;
+    padding:4px 11px; border-radius:var(--radius-pill); box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+
+  .venue-head{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;}
+  .venue-name{font-family:var(--font-display); font-weight:700; font-size:19px; line-height:1.25; color:var(--cream);}
+  .price-tag{
+    font-family:var(--font-mono); font-size:12.5px; font-weight:600; color:var(--ember-500);
+    background: rgba(221,90,52,0.12); border:1px solid rgba(221,90,52,0.3);
+    padding:4px 10px; border-radius:var(--radius-pill); white-space:nowrap; flex-shrink:0;
+  }
+
+  .pills{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:14px;}
+  .pill{
+    font-size:12px; font-weight:500; padding:4px 11px; border-radius:var(--radius-pill);
+    background: rgba(255,255,255,0.06); border:1px solid var(--line-strong); color:var(--cream-dim);
+  }
+  .pill.beer{color:var(--amber-300); border-color: rgba(246,197,102,0.35); background: rgba(246,197,102,0.08);}
+
+  .reviews{display:flex; flex-direction:column; gap:6px; margin-bottom:16px; font-size:13.5px;}
+  .review{display:flex; gap:8px; align-items:flex-start; line-height:1.45;}
+  .review .dot{flex-shrink:0; width:16px; text-align:center; font-size:12px; margin-top:1px;}
+  .review.good .dot{color:var(--herb-400);}
+  .review.bad .dot{color:var(--ember-500);}
+  .review span.txt{color:var(--cream-dim);}
+
+  .map-toggle{
+    width:100%; text-align:left; background:none; border:1px dashed var(--line-strong);
+    color:var(--amber-300); font-family:var(--font-body); font-size:13px; font-weight:600;
+    padding:9px 12px; border-radius:11px; cursor:pointer; margin-bottom:14px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .map-toggle:hover{background: rgba(255,255,255,0.04);}
+  .map-toggle .chev{transition: transform .2s ease; font-size:11px;}
+  .map-toggle.open .chev{transform: rotate(180deg);}
+  .map-panel{
+    overflow:hidden; max-height:0; transition: max-height .35s ease;
+    border-radius:12px; margin: -6px 0 14px;
+  }
+  .map-panel.open{max-height:280px;}
+  .map-panel iframe{width:100%; height:230px; border:0; display:block; border-radius:12px;}
+  .map-link{
+    display:inline-block; font-size:12.5px; color:var(--amber-300); text-decoration:none;
+    margin-top:8px; font-weight:500;
+  }
+  .map-link:hover{text-decoration:underline;}
+
+  .vote-row{
+    display:flex; align-items:center; gap:14px; padding-top:14px; border-top:1px solid var(--line);
+  }
+  .mug{
+    width:38px; height:52px; flex-shrink:0; border:2.5px solid var(--cream-faint);
+    border-radius:3px 3px 9px 9px; position:relative; overflow:hidden;
+    background: rgba(0,0,0,0.25);
+  }
+  .mug::after{
+    content:''; position:absolute; right:-11px; top:11px; width:11px; height:20px;
+    border:2.5px solid var(--cream-faint); border-left:none; border-radius:0 8px 8px 0;
+  }
+  .mug-fill{
+    position:absolute; bottom:0; left:0; right:0; height:0%;
+    background: linear-gradient(180deg, var(--amber-300), var(--amber-600));
+    transition: height .6s cubic-bezier(.2,.8,.2,1);
+  }
+  .mug-fill::before{
+    content:''; position:absolute; top:-4px; left:-2px; right:-2px; height:6px;
+    background: var(--cream); border-radius:4px; opacity:0;
+    transition: opacity .3s ease .3s;
+  }
+  .mug-fill.foam::before{opacity:0.92;}
+
+  .vote-stats{flex:1; min-width:0;}
+  .vote-count{font-family:var(--font-mono); font-size:13px; color:var(--cream-dim); margin-bottom:5px;}
+  .vote-count b{color:var(--cream); font-weight:600;}
+  .bar-track{height:6px; border-radius:3px; background:rgba(255,255,255,0.08); overflow:hidden;}
+  .bar-fill{height:100%; background: linear-gradient(90deg, var(--amber-500), var(--amber-300)); width:0%; transition: width .6s cubic-bezier(.2,.8,.2,1); border-radius:3px;}
+
+  .vote-btn{
+    flex-shrink:0; font-family:var(--font-body); font-weight:600; font-size:13.5px;
+    padding:10px 16px; border-radius:11px; border:1px solid var(--amber-500); cursor:pointer;
+    background: var(--amber-500); color:#3A2408; transition: transform .12s ease, background .2s ease;
+    white-space:nowrap;
+  }
+  .vote-btn:hover{background: var(--amber-300);}
+  .vote-btn:active{transform: scale(0.96);}
+  .vote-btn.chosen{background: transparent; color: var(--amber-300); border-color: var(--amber-500);}
+  .vote-btn.chosen:hover{background: rgba(239,162,58,0.12);}
+
+  .voters-list{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px;}
+  .voter-chip{
+    font-size:11.5px; font-weight:500; color:var(--cream-dim); background: rgba(255,255,255,0.05);
+    border:1px solid var(--line); padding:3px 9px; border-radius:var(--radius-pill);
+  }
+  .voter-chip.me{color:#3A2408; background:var(--amber-300); border-color:var(--amber-300);}
+
+  footer{text-align:center; margin-top:36px; font-size:12.5px; color:var(--cream-faint); line-height:1.7;}
+
+  @media (max-width:520px){
+    .venue{padding:17px 16px 15px;}
+    .voter-bar{padding:14px;}
+    .vote-row{flex-wrap:wrap;}
+    .vote-btn{width:100%; order:3;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">🍢 Team outing</div>
+    <h1>Vote địa điểm <span class="accent">nhậu</span> công ty</h1>
+    <p class="subtitle">Chọn quán ưng ý nhất, xem review nhanh, và bình chọn — kết quả cập nhật cho cả team theo thời gian thực.</p>
+  </header>
+
+  <div class="voter-bar">
+    <label for="voterName">Tên bạn:</label>
+    <input id="voterName" type="text" placeholder="VD: Minh Kế toán" autocomplete="off" maxlength="40">
+    <div class="tally" id="tally">Đang tải...</div>
+    <div class="voter-warn" id="voterWarn">⚠️ Nhập tên trước khi vote nha!</div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    Vote được lưu chung cho cả công ty — nhập đúng tên để đổi ý bất cứ lúc nào.<br>
+    Kết quả tự làm mới mỗi vài giây, không cần tải lại trang.
+  </footer>
+
+</div>
+
+<script>
+const VENUES = [
+  {
+    id: 'pieu',
+    name: 'Nhà Của Piêu',
+    price: '200–300K',
+    tags: ['Nướng', 'Có bia'],
+    good: 'Ăn ngon',
+    bad: 'Đắt',
+    mapLink: 'https://maps.app.goo.gl/hG8LCipcVCWNJ74K7',
+    embed: 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d4837.565098181841!2d106.7101155!3d10.8082423!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529c9300f414f%3A0xe6ed5249f67ded85!2zTmjDoCBD4bunYSBQacOqdQ!5e1!3m2!1sen!2s!4v1785377046549!5m2!1sen!2s'
+  },
+  {
+    id: 'tote',
+    name: 'TOTE BUFFET BBQ',
+    price: '200–300K',
+    tags: ['Buffet nướng', 'Không bia'],
+    good: 'Đa dạng món',
+    bad: 'Thịt chất lượng tạm',
+    mapLink: 'https://maps.app.goo.gl/hUbVhkBgo1kh7JWVA',
+    embed: 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d19349.232713275556!2d106.68422948715819!3d10.824169900000005!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529002207fc55%3A0xe6cc511a030c1d3c!2sTOTE%20BUFFET%20BBQ!5e1!3m2!1sen!2s!4v1785377634956!5m2!1sen!2s'
+  },
+  {
+    id: 'tuyet',
+    name: 'Bia Tuyết Q9 - Ung Văn Khiêm',
+    price: '200–500K',
+    tags: ['Nướng', 'Có bia'],
+    good: 'Quán rộng',
+    bad: 'Thái độ phục vụ tệ',
+    mapLink: 'https://maps.app.goo.gl/tQrGnpypDYwZnHcU7',
+    embed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4837.56318343614!2d106.71239267589517!3d10.808361089342338!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175297f591d7ef1%3A0x3cb8a7848e212d88!2zQmlhIFR1eeG6v3QgUTkgLSBVbmcgVsSDbiBLaGnDqm0!5e1!3m2!1sen!2s!4v1785377147392!5m2!1sen!2s'
+  },
+  {
+    id: 'songtrang',
+    name: 'Song Trang',
+    price: '200–300K',
+    tags: ['Lẩu', 'Có bia'],
+    good: 'Ngon, lên món nhanh',
+    bad: 'Thái độ tệ (giữ xe)',
+    mapLink: 'https://maps.app.goo.gl/YP1GSJykWeUS42EY8',
+    embed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4837.349215315018!2d106.72638877589556!3d10.82162738932994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175262ef1bff8e9%3A0x8f2f5b120128127!2sSong%20Trang!5e1!3m2!1sen!2s!4v1785378054093!5m2!1sen!2s'
+  }
+];
+
+const STORAGE_KEY = 'nhau_votes_v1';
+let votes = {};
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function tallyFor(id){
+  return Object.values(votes).filter(v => v === id).length;
+}
+
+function totalVotes(){
+  return Object.keys(votes).length;
+}
+
+function leaderId(){
+  const total = totalVotes();
+  if(!total) return null;
+  let best = null, bestCount = 0, tie = false;
+  VENUES.forEach(v => {
+    const c = tallyFor(v.id);
+    if(c > bestCount){ best = v.id; bestCount = c; tie = false; }
+    else if(c === bestCount && c > 0){ tie = true; }
+  });
+  return (best && !tie) ? best : null;
+}
+
+function buildCard(v, i){
+  const div = document.createElement('div');
+  div.className = 'venue';
+  div.style.animationDelay = (i * 0.06) + 's';
+  div.dataset.id = v.id;
+
+  const tagsHtml = v.tags.map(t => {
+    const isBeer = t.toLowerCase().includes('bia') && !t.toLowerCase().includes('không');
+    return `<span class="pill${isBeer ? ' beer' : ''}">${escapeHtml(t)}</span>`;
+  }).join('');
+
+  div.innerHTML = `
+    <div class="venue-head">
+      <div class="venue-name">${escapeHtml(v.name)}</div>
+      <div class="price-tag">${escapeHtml(v.price)}</div>
+    </div>
+    <div class="pills">${tagsHtml}</div>
+    <div class="reviews">
+      <div class="review good"><span class="dot">✓</span><span class="txt">${escapeHtml(v.good)}</span></div>
+      <div class="review bad"><span class="dot">✕</span><span class="txt">${escapeHtml(v.bad)}</span></div>
+    </div>
+    <button class="map-toggle" type="button">
+      <span>📍 Xem bản đồ</span><span class="chev">▾</span>
+    </button>
+    <div class="map-panel">
+      <iframe data-src="${v.embed}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <a class="map-link" href="${v.mapLink}" target="_blank" rel="noopener">Mở trong Google Maps ↗</a>
+    </div>
+    <div class="vote-row">
+      <div class="mug"><div class="mug-fill"></div></div>
+      <div class="vote-stats">
+        <div class="vote-count"><b class="count-num">0</b> phiếu · <span class="pct-num">0%</span></div>
+        <div class="bar-track"><div class="bar-fill"></div></div>
+      </div>
+      <button class="vote-btn" type="button">🍻 Chọn quán này</button>
+    </div>
+    <div class="voters-list"></div>
+  `;
+
+  const toggle = div.querySelector('.map-toggle');
+  const panel = div.querySelector('.map-panel');
+  const iframe = div.querySelector('iframe');
+  toggle.addEventListener('click', () => {
+    const isOpen = panel.classList.toggle('open');
+    toggle.classList.toggle('open', isOpen);
+    if(isOpen && !iframe.src){ iframe.src = iframe.dataset.src; }
+  });
+
+  div.querySelector('.vote-btn').addEventListener('click', () => onVote(v.id));
+
+  return div;
+}
+
+function currentName(){
+  return document.getElementById('voterName').value.trim();
+}
+
+async function onVote(venueId){
+  const name = currentName();
+  const warn = document.getElementById('voterWarn');
+  if(!name){
+    warn.classList.add('show');
+    document.getElementById('voterName').focus();
+    setTimeout(() => warn.classList.remove('show'), 2600);
+    return;
+  }
+  if(votes[name] === venueId){
+    delete votes[name];
+  } else {
+    votes[name] = venueId;
+  }
+  renderResults();
+  try{
+    await window.storage.set(STORAGE_KEY, JSON.stringify(votes), true);
+  }catch(e){
+    console.error('Không lưu được vote:', e);
+  }
+}
+
+function renderResults(){
+  const total = totalVotes();
+  const leader = leaderId();
+  const name = currentName();
+
+  document.getElementById('tally').innerHTML = `Tổng: <b>${total}</b> người đã vote`;
+
+  VENUES.forEach(v => {
+    const card = document.querySelector(`.venue[data-id="${v.id}"]`);
+    if(!card) return;
+    const count = tallyFor(v.id);
+    const pct = total ? Math.round((count/total)*100) : 0;
+
+    card.querySelector('.count-num').textContent = count;
+    card.querySelector('.pct-num').textContent = pct + '%';
+    card.querySelector('.bar-fill').style.width = pct + '%';
+
+    const fill = card.querySelector('.mug-fill');
+    fill.style.height = pct + '%';
+    fill.classList.toggle('foam', pct > 4);
+
+    card.classList.toggle('leading', leader === v.id);
+    let badge = card.querySelector('.leader-badge');
+    if(leader === v.id){
+      if(!badge){
+        badge = document.createElement('div');
+        badge.className = 'leader-badge';
+        badge.textContent = '🔥 Đang dẫn đầu';
+        card.prepend(badge);
+      }
+    } else if(badge){
+      badge.remove();
+    }
+
+    const btn = card.querySelector('.vote-btn');
+    const isMine = votes[name] === v.id && name;
+    btn.textContent = isMine ? '✓ Đã chọn' : '🍻 Chọn quán này';
+    btn.classList.toggle('chosen', !!isMine);
+
+    const votersWrap = card.querySelector('.voters-list');
+    const voterNames = Object.entries(votes).filter(([,id]) => id === v.id).map(([n]) => n);
+    votersWrap.innerHTML = voterNames.map(n =>
+      `<span class="voter-chip${n === name ? ' me' : ''}">${escapeHtml(n)}</span>`
+    ).join('');
+  });
+}
+
+async function loadVotes(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, true);
+    votes = res ? JSON.parse(res.value) : {};
+  }catch(e){
+    votes = {};
+  }
+  renderResults();
+}
+
+async function init(){
+  const grid = document.getElementById('grid');
+  VENUES.forEach((v, i) => grid.appendChild(buildCard(v, i)));
+  document.getElementById('voterName').addEventListener('input', renderResults);
+  await loadVotes();
+  setInterval(loadVotes, 6000);
+}
+
+init();
+</script>
+</body>
+</html>
