@@ -223,15 +223,26 @@
   </div>
 
   <div class="grid" id="grid"></div>
-
-  <footer>
-    Vote được lưu chung cho cả công ty — nhập đúng tên để đổi ý bất cứ lúc nào.<br>
-    Kết quả tự làm mới mỗi vài giây, không cần tải lại trang.
-  </footer>
-
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3qcMsmD-4kReGnY8lpJ70uCOBDmXurBo",
+  authDomain: "vote-beer.firebaseapp.com",
+  databaseURL: "https://vote-beer-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "vote-beer",
+  storageBucket: "vote-beer.firebasestorage.app",
+  messagingSenderId: "442620171561",
+  appId: "1:442620171561:web:935dbacec62387b5509338"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getDatabase(firebaseApp);
+const votesRef = ref(db, 'votes');
+
 const VENUES = [
   {
     id: 'pieu',
@@ -275,7 +286,6 @@ const VENUES = [
   }
 ];
 
-const STORAGE_KEY = 'nhau_votes_v1';
 let votes = {};
 
 function escapeHtml(s){
@@ -375,7 +385,7 @@ async function onVote(venueId){
   }
   renderResults();
   try{
-    await window.storage.set(STORAGE_KEY, JSON.stringify(votes), true);
+    await set(votesRef, votes);
   }catch(e){
     console.error('Không lưu được vote:', e);
   }
@@ -428,22 +438,14 @@ function renderResults(){
   });
 }
 
-async function loadVotes(){
-  try{
-    const res = await window.storage.get(STORAGE_KEY, true);
-    votes = res ? JSON.parse(res.value) : {};
-  }catch(e){
-    votes = {};
-  }
-  renderResults();
-}
-
-async function init(){
+function init(){
   const grid = document.getElementById('grid');
   VENUES.forEach((v, i) => grid.appendChild(buildCard(v, i)));
   document.getElementById('voterName').addEventListener('input', renderResults);
-  await loadVotes();
-  setInterval(loadVotes, 6000);
+  onValue(votesRef, snapshot => {
+    votes = snapshot.val() || {};
+    renderResults();
+  });
 }
 
 init();
