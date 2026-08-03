@@ -212,7 +212,6 @@
   <header class="hero">
     <div class="eyebrow">🍢 Team outing</div>
     <h1>Vote địa điểm <span class="accent">nhậu</span> công ty</h1>
-    <p class="subtitle">Có thể chọn quán. Có mỗi tên == một user.</p>
     <p class="subtitle">Nhập tên để vote, nếu muốn edit vote hãy nhập lại tên cũ</p>
   </header>
 
@@ -246,19 +245,19 @@ const votesRef = ref(db, 'votes');
 
 const VENUES = [
   {
-    id: 'pieu',
-    name: 'Nhà Của Piêu',
-    price: '200–300K',
-    tags: ['Nướng', 'Có bia'],
-    good: 'Ăn ngon',
-    bad: 'Đắt',
-    mapLink: 'https://maps.app.goo.gl/hG8LCipcVCWNJ74K7',
-    embed: 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d4837.565098181841!2d106.7101155!3d10.8082423!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529c9300f414f%3A0xe6ed5249f67ded85!2zTmjDoCBD4bunYSBQacOqdQ!5e1!3m2!1sen!2s!4v1785377046549!5m2!1sen!2s'
+    id: 'namzui',
+    name: 'Quán Nhậu Năm Zui',
+    price: '100-200K',
+    tags: ['Nướng', 'Lẩu', 'Có bia'],
+    good: 'Gần, giá hợp lý, ngon, thoáng mát',
+    bad: 'Không có 🙂',
+    mapLink: '',
+    embed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4837.413600922442!2d106.70592967589539!3d10.817637089333674!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752900255fc65b%3A0xe6a8e24aa1141a7c!2zUVXDgU4gTkjhuqxVIE7Egk0gWlVJIHwgUVXDgU4gTkjhuqxVIEfhuqZOIMSQw4JZIHwgUVXDgU4gTkjhuqxVIELDjE5IIFRI4bqgTkggfCBRVcOBTiDEgk4gR-G6pk4gxJDDglk!5e1!3m2!1sen!2s!4v1785753894016!5m2!1sen!2s'
   },
   {
     id: 'tote',
     name: 'TOTE BUFFET BBQ',
-    price: '200–300K',
+    price: '200-300K',
     tags: ['Buffet nướng', 'Không bia'],
     good: 'Đa dạng món',
     bad: 'Thịt chất lượng tạm',
@@ -268,22 +267,22 @@ const VENUES = [
   {
     id: 'tuyet',
     name: 'Bia Tuyết Q9 - Ung Văn Khiêm',
-    price: '200–500K',
+    price: '200-500K',
     tags: ['Nướng', 'Có bia'],
-    good: 'Quán rộng',
-    bad: 'Thái độ phục vụ tệ',
+    good: 'Quán rộng, món ngon',
+    bad: 'Đắt',
     mapLink: 'https://maps.app.goo.gl/tQrGnpypDYwZnHcU7',
     embed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4837.56318343614!2d106.71239267589517!3d10.808361089342338!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175297f591d7ef1%3A0x3cb8a7848e212d88!2zQmlhIFR1eeG6v3QgUTkgLSBVbmcgVsSDbiBLaGnDqm0!5e1!3m2!1sen!2s!4v1785377147392!5m2!1sen!2s'
   },
   {
-    id: 'songtrang',
-    name: 'Song Trang',
-    price: '200–300K',
-    tags: ['Lẩu', 'Có bia'],
-    good: 'Ngon, lên món nhanh',
-    bad: 'Thái độ tệ (giữ xe)',
-    mapLink: 'https://maps.app.goo.gl/YP1GSJykWeUS42EY8',
-    embed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4837.349215315018!2d106.72638877589556!3d10.82162738932994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175262ef1bff8e9%3A0x8f2f5b120128127!2sSong%20Trang!5e1!3m2!1sen!2s!4v1785378054093!5m2!1sen!2s'
+    id: 'utuyen',
+    name: 'Lẩu Bò Út Tuyền',
+    price: '100-200K',
+    tags: ['Lẩu', 'Nướng', 'Có bia'],
+    good: 'Ngon, rẻ',
+    bad: 'Khói mờ ảo diệu',
+    mapLink: 'https://maps.app.goo.gl/XQd7LT1LmLR8xQfY8',
+    embed: 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d4837.268244133347!2d106.71331276259!3d10.826643517939658!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528860a5508bf%3A0x74134f93e1cf9fa5!2zTOG6qXUgQsOyIMOadCBUdXnhu4Fu!5e1!3m2!1sen!2s!4v1785754076308!5m2!1sen!2s'
   }
 ];
 
@@ -339,7 +338,7 @@ function buildCard(v, i){
     </button>
     <div class="map-panel">
       <iframe data-src="${v.embed}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <a class="map-link" href="${v.mapLink}" target="_blank" rel="noopener">Mở trong Google Maps ↗</a>
+      ${v.mapLink ? `<a class="map-link" href="${v.mapLink}" target="_blank" rel="noopener">Mở trong Google Maps ↗</a>` : ''}
     </div>
     <div class="vote-row">
       <div class="mug"><div class="mug-fill"></div></div>
